@@ -11,7 +11,6 @@
 #include <map>
 using namespace std;
 
-
 class city
 {
 public:
@@ -24,33 +23,6 @@ public:
         this->cost = cost;
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 list<city> Almeria = { {city("Granada", 167), city("Murcia", 218)} };
 list<city> Murcia = { {city("Albacete", 146), city("Alicante", 81), city("Almeria", 218)} };
@@ -103,7 +75,7 @@ list<city> SanSebastian = { {city("Vitoria", 100), city("Bilbao", 101)} };
 list<city> Coruna = { {city("Lugo", 98), city("Oviedo", 287), city("Santiago", 75)} };
 
 map<string, list<city>> neighbours = {
-    {"Almeria", Almeria}
+    {"Almeria", Almeria}, {"Murcia", Murcia}, {"Alicante", Alicante}, {"Granada", Granada}, {"Malaga", Malaga}, {"Cadiz", Cadiz}, {"Cordoba", Cordoba}, {"Merida", Merida}, {"Valencia", Valencia}, {"Castellon", Castellon}, {"Teruel", Teruel}, {"Tarragona", Tarragona}, {"Barcelona", Barcelona}, {"Lleida", Lleida}, {"Cuenca", Cuenca}, {"CiudadReal", CiudadReal}, {"Zaragoza", Zaragoza}, {"Pamplona", Pamplona}, {"Madrid", Madrid}, {"Salamanca", Salamanca}, {"Avila", Avila}, {"Valladolid", Valladolid}, {"Palencia", Palencia}, {"Soria", Soria}, {"Vitoria", Vitoria}, {"Bilbao", Bilbao}, {"Burgos", Burgos}, {"Santander", Santander}, {"Leon", Leon}, {"Lugo", Lugo}, {"Oviedo", Oviedo}, {"Santiago", Santiago}, {"Pontevedra", Pontevedra}, {"Orense", Orense}, {"Albacete", Albacete}, {"Jaen", Jaen}, {"Sevilla", Sevilla}, {"Huelva", Huelva}, {"Badajoz", Badajoz}, {"Caceres", Caceres}, {"Gerona", Gerona}, {"Huesca", Huesca}, {"Toledo", Toledo}, {"Guadalajara", Guadalajara}, {"Segovia", Segovia}, {"Zamora", Zamora}, {"Logrono", Logrono}, {"SanSebastian", SanSebastian}, {"Coruna", Coruna}
 };
 map<string, int> distanceToGoal = {
     {"Almeria", 571}, {"Granada", 507}, {"Jaen", 439}, {"Cordoba", 419}, {"Malaga", 550}, {"Huelva", 525}, {"Sevilla", 487},
