@@ -26,6 +26,23 @@ public:
     }
 };
 
+class cityNode
+{
+public:
+    string name;
+    int totalCost;
+    int currentCost;
+    list<string> path;
+    
+    cityNode(string name, int cost, int currentCost, list<string> path)
+    {
+        this->name = name;
+        this->totalCost = cost;
+        this->currentCost = currentCost;
+        this->path = path;
+    }
+};
+
 list<city> Almeria = { {city("Granada", 167), city("Murcia", 218)} };
 list<city> Murcia = { {city("Albacete", 146), city("Alicante", 81), city("Almeria", 218)} };
 list<city> Alicante = { {city("Albacete", 167), city("Murcia", 81), city("Valencia", 166)} };
@@ -90,20 +107,28 @@ map<string, int> distanceToGoal = {
     {"Valladolid", 0}, {"Burgos", 114}, {"Palencia", 43}, {"Soria", 187}, {"Pamplona", 284}, {"Avila", 110}
 };
 
-list<city> GreedyBFS(string startCity, string endCity);
-list<string> AStar(string startCity, string endCity);
+list<string> GreedyBFS(string startCity, string endCity);
+cityNode AStar(string startCity, string endCity);
 
 int main(int argc, const char * argv[]) {
     
-    list<city> path = GreedyBFS("Malaga", "Valladolid");
-    //list<string> path = AStar("Malaga", "Valladolid");
+    list<string> path = GreedyBFS("Malaga", "Valladolid");
     
     
     cout << "Through the cities:" << endl;
-    for (city n : path) {
+    for (string n : path) {
         cout << n << '\n';
     }
+    
     cout << "\n\n" << endl;
+    
+    cityNode stopCity = AStar("Malaga", "Valladolid");
+    
+    cout << "The path had a distance of: " << stopCity.currentCost << endl;
+    for (string n : stopCity.path) {
+        cout << n << endl;
+    }
+    cout << "\n" << endl;
     
     return 0;
 }
@@ -140,52 +165,54 @@ list<string> GreedyBFS(string startCity, string endCity)
         }
     }
     cout << "--- Greedy BFS ---" << endl;
-    cout << "The path had a distance of " << pathCost << endl;
+    cout << "The path had a distance of: " << pathCost << endl;
     
     return path;
 }
 
-/*list<string> AStar(string startCity, string endCity)
+cityNode AStar(string startCity, string endCity)
 {
-    list<string> path = {};
-    int pathCost = 0;
-    queue <string> nodes;
-    list<string> unexplored;
-    nodes.push(startCity);
+    queue<cityNode> nodes;
+    cityNode first(startCity, distanceToGoal[startCity], 0, {startCity});
+    list<cityNode> unexplored;
+    list<cityNode>::iterator it1;
+    nodes.push(first);
+    cityNode currentCity("", 0, 0, {});
     
-    while (!nodes.empty()) {
-        string currentCity = nodes.front();
+    while(!nodes.empty()) {
+        currentCity = nodes.front();
         nodes.pop();
-        path.push_back(currentCity);
-        unexplored.remove(currentCity);
         
-        if(currentCity.compare(endCity) != 0){
-            list<city> currentNeighbours = neighbours[currentCity];
-            
+        if(currentCity.name.compare(endCity) != 0) {
+            list<city> currentNeighbours = neighbours[currentCity.name];
             for (city n : currentNeighbours) {
-                unexplored.push_back(n.name);
+                list<string> path = currentCity.path;
+                path.push_back(n.name);
+                cityNode i(n.name, distanceToGoal[n.name], n.cost+currentCity.currentCost, path);
+                unexplored.push_back(i);
             }
             
-            string nextCity = "";
-            int currentBest = INT_MAX;
-            int currentPathCost = 0;
-            
-            for (string n : unexplored) {
-                int currentCost = distanceToGoal[n];
-                if (pathCost+currentCost < currentBest) {
-                    nextCity = n;
-                    currentBest = currentCost;
-                    currentPathCost = n.cost;
+            cityNode currentBest("a", INT_MAX, 0, {});
+            for(cityNode n : unexplored) {
+                if((n.totalCost+n.currentCost) < (currentBest.totalCost+currentBest.currentCost)) {
+                    currentBest = n;
                 }
             }
-            pathCost += currentPathCost;
-            nodes.push(nextCity);
+            it1 = unexplored.begin();
+            bool removed = false;
+            while(!removed) {
+                if(it1->name.compare(currentBest.name) == 0) {
+                    unexplored.erase(it1);
+                    removed = true;
+                }
+                ++it1;
+            }
+            nodes.push(currentBest);
         }
     }
-    
-    return path;
-    
-}*/
+    cout << "--- A* ---" << endl;
+    return currentCity;
+}
 
 
 
