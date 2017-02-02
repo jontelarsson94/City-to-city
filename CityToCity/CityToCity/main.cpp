@@ -9,6 +9,8 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <queue>
+#include <limits.h>
 using namespace std;
 
 class city
@@ -88,28 +90,108 @@ map<string, int> distanceToGoal = {
     {"Valladolid", 0}, {"Burgos", 114}, {"Palencia", 43}, {"Soria", 187}, {"Pamplona", 284}, {"Avila", 110}
 };
 
+list<city> GreedyBFS(string startCity, string endCity);
+list<string> AStar(string startCity, string endCity);
+
 int main(int argc, const char * argv[]) {
     
-    city a("first", 450);
-    city b("infirst", 300);
-    city c("second", 350);
-    city d("insecond", 200);
+    list<city> path = GreedyBFS("Malaga", "Valladolid");
+    //list<string> path = AStar("Malaga", "Valladolid");
     
-    list<city> one = {};
-    list<city> two = {};
-    one.push_back(a);
-    one.push_back(b);
-    two.push_back(c);
-    two.push_back(d);
     
-    map<string, list<city>> my_map;
-    my_map["First"] = one;
-    
-    list<city> bla = my_map["First"];
-    
-    for (city n : bla) {
-        std::cout << n.name << '\n';
+    cout << "Through the cities:" << endl;
+    for (city n : path) {
+        cout << n << '\n';
     }
+    cout << "\n\n" << endl;
     
     return 0;
 }
+
+list<string> GreedyBFS(string startCity, string endCity)
+{
+    list<string> path = {};
+    int pathCost = 0;
+    queue <string> nodes;
+    nodes.push(startCity);
+    
+    while (!nodes.empty()) {
+        string currentCity = nodes.front();
+        nodes.pop();
+        path.push_back(currentCity);
+        
+        if(currentCity.compare(endCity) != 0){
+            list<city> currentNeighbours = neighbours[currentCity];
+        
+            string nextCity = "";
+            int currentBest = INT_MAX;
+            int currentPathCost = 0;
+        
+            for (city n : currentNeighbours) {
+                int currentCost = distanceToGoal[n.name];
+                if (currentCost < currentBest) {
+                    nextCity = n.name;
+                    currentBest = currentCost;
+                    currentPathCost = n.cost;
+                }
+            }
+            pathCost += currentPathCost;
+            nodes.push(nextCity);
+        }
+    }
+    cout << "--- Greedy BFS ---" << endl;
+    cout << "The path had a distance of " << pathCost << endl;
+    
+    return path;
+}
+
+/*list<string> AStar(string startCity, string endCity)
+{
+    list<string> path = {};
+    int pathCost = 0;
+    queue <string> nodes;
+    list<string> unexplored;
+    nodes.push(startCity);
+    
+    while (!nodes.empty()) {
+        string currentCity = nodes.front();
+        nodes.pop();
+        path.push_back(currentCity);
+        unexplored.remove(currentCity);
+        
+        if(currentCity.compare(endCity) != 0){
+            list<city> currentNeighbours = neighbours[currentCity];
+            
+            for (city n : currentNeighbours) {
+                unexplored.push_back(n.name);
+            }
+            
+            string nextCity = "";
+            int currentBest = INT_MAX;
+            int currentPathCost = 0;
+            
+            for (string n : unexplored) {
+                int currentCost = distanceToGoal[n];
+                if (pathCost+currentCost < currentBest) {
+                    nextCity = n;
+                    currentBest = currentCost;
+                    currentPathCost = n.cost;
+                }
+            }
+            pathCost += currentPathCost;
+            nodes.push(nextCity);
+        }
+    }
+    
+    return path;
+    
+}*/
+
+
+
+
+
+
+
+
+
