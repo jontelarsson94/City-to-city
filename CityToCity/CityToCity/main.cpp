@@ -54,7 +54,7 @@ list<city> Merida = { {city("Sevilla", 192), city("Badajoz", 64), city("Caceres"
 list<city> Valencia = { {city("Alicante", 166), city("Castellon", 74), city("Cuenca", 199)} };
 list<city> Castellon = { {city("Tarragona", 187), city("Teruel", 144), city("Valencia", 74)} };
 list<city> Teruel = { {city("Cuenca", 148), city("Zaragoza", 171), city("Castellon", 144)} };
-list<city> Tarragona = { {city("Barcelona", 99), city("Sevilla", 121), city("Castellon", 187)} };
+list<city> Tarragona = { {city("Barcelona", 99), city("Castellon", 187)} };
 list<city> Barcelona = { {city("Lleida", 163), city("Gerona", 103), city("Tarragona", 99)} };
 list<city> Lleida = { {city("Gerona", 229), city("Huesca", 112), city("Zaragoza", 152), city("Barcelona", 163)} };
 list<city> Cuenca = { {city("Albacete", 144), city("Valencia", 199), city("Teruel", 148), city("Madrid", 168)} };
@@ -93,6 +93,7 @@ list<city> Logrono = { {city("Soria", 101), city("Vitoria", 94)} };
 list<city> SanSebastian = { {city("Vitoria", 100), city("Bilbao", 101)} };
 list<city> Coruna = { {city("Lugo", 98), city("Oviedo", 287), city("Santiago", 75)} };
 
+
 map<string, list<city>> neighbours = {
     {"Almeria", Almeria}, {"Murcia", Murcia}, {"Alicante", Alicante}, {"Granada", Granada}, {"Malaga", Malaga}, {"Cadiz", Cadiz}, {"Cordoba", Cordoba}, {"Merida", Merida}, {"Valencia", Valencia}, {"Castellon", Castellon}, {"Teruel", Teruel}, {"Tarragona", Tarragona}, {"Barcelona", Barcelona}, {"Lleida", Lleida}, {"Cuenca", Cuenca}, {"CiudadReal", CiudadReal}, {"Zaragoza", Zaragoza}, {"Pamplona", Pamplona}, {"Madrid", Madrid}, {"Salamanca", Salamanca}, {"Avila", Avila}, {"Valladolid", Valladolid}, {"Palencia", Palencia}, {"Soria", Soria}, {"Vitoria", Vitoria}, {"Bilbao", Bilbao}, {"Burgos", Burgos}, {"Santander", Santander}, {"Leon", Leon}, {"Lugo", Lugo}, {"Oviedo", Oviedo}, {"Santiago", Santiago}, {"Pontevedra", Pontevedra}, {"Orense", Orense}, {"Albacete", Albacete}, {"Jaen", Jaen}, {"Sevilla", Sevilla}, {"Huelva", Huelva}, {"Badajoz", Badajoz}, {"Caceres", Caceres}, {"Gerona", Gerona}, {"Huesca", Huesca}, {"Toledo", Toledo}, {"Guadalajara", Guadalajara}, {"Segovia", Segovia}, {"Zamora", Zamora}, {"Logrono", Logrono}, {"SanSebastian", SanSebastian}, {"Coruna", Coruna}
 };
@@ -107,8 +108,23 @@ map<string, int> distanceToGoal = {
     {"Valladolid", 0}, {"Burgos", 114}, {"Palencia", 43}, {"Soria", 187}, {"Pamplona", 284}, {"Avila", 110}
 };
 
+list<cityNode>::iterator it1;
+
 list<string> GreedyBFS(string startCity, string endCity);
 cityNode AStar(string startCity, string endCity);
+list<cityNode> removeFromList(list<cityNode> unexplored, cityNode currentBest)
+{
+    it1 = unexplored.begin();
+    bool removed = false;
+    while(!removed) {
+        if(it1->name.compare(currentBest.name) == 0) {
+            unexplored.erase(it1);
+            removed = true;
+        }
+        ++it1;
+    }
+    return unexplored;
+}
 
 int main(int argc, const char * argv[]) {
     
@@ -175,7 +191,6 @@ cityNode AStar(string startCity, string endCity)
     queue<cityNode> nodes;
     cityNode first(startCity, distanceToGoal[startCity], 0, {startCity});
     list<cityNode> unexplored;
-    list<cityNode>::iterator it1;
     nodes.push(first);
     cityNode currentCity("", 0, 0, {});
     
@@ -198,15 +213,8 @@ cityNode AStar(string startCity, string endCity)
                     currentBest = n;
                 }
             }
-            it1 = unexplored.begin();
-            bool removed = false;
-            while(!removed) {
-                if(it1->name.compare(currentBest.name) == 0) {
-                    unexplored.erase(it1);
-                    removed = true;
-                }
-                ++it1;
-            }
+            
+            unexplored = removeFromList(unexplored, currentBest);
             nodes.push(currentBest);
         }
     }
